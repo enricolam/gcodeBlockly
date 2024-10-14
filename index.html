@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
+<script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
+    <style>
+        #blocklyDiv {
+            height: 480px;
+            width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <h1>G-code Blockly Demo</h1>
+    <p>
+        <button onclick="showCode()">Show G-code</button>
+        <button onclick="runCode()">Run G-code</button>
+    </p>
+
+    <div id="blocklyDiv"></div>
+    <xml id="toolbox" style="display: none">
+	<block type="gcode_command">
+          <field name="VALUE">28</field>
+        </block>
+	<block type="gcode_command">
+          <field name="VALUE">1</field>
+        </block>
+	<block type="gcode_parameter">
+          <field name="PARAM">X</field>
+        </block>
+	<block type="gcode_parameter">
+          <field name="PARAM">Y</field>
+        </block>
+	<block type="gcode_parameter">
+          <field name="PARAM">Z</field>
+        </block>
+    </xml>
+
+    <script>
+        // Define the G-code command block
+        Blockly.Blocks['gcode_command'] = {
+            init: function() {
+                this.setInputsInline(true);
+                this.appendDummyInput()
+                    .appendField(new Blockly.FieldDropdown([
+                        ['G', 'G'],
+                        ['M', 'M'],
+                        ['T', 'T']
+                    ]), 'COMMAND');
+                this.appendDummyInput()
+                    //.appendField("number:")
+                    .appendField(new Blockly.FieldNumber(28, 0, 100, 1), 'VALUE');
+                this.appendValueInput('PARAMETERS')
+                    .setCheck('gcode_parameter')
+                    .appendField('','PARAM');
+                this.setColour(230);
+                this.setPreviousStatement(true, 'COMMAND');
+                this.setNextStatement(true, 'COMMAND');
+                this.setTooltip('G-code command block.');
+                this.setHelpUrl('');
+            }
+        };
+
+        // Define the G-code parameter block
+        Blockly.Blocks['gcode_parameter'] = {
+            init: function() {
+                this.setInputsInline(true);
+                this.appendDummyInput()
+                    .appendField(new Blockly.FieldDropdown([
+                        ['X', 'X'],
+                        ['Y', 'Y'],
+                        ['Z', 'Z'],
+                        ['A', 'A'],
+                        ['B', 'B'],
+                        ['C', 'C']
+                    ]), 'PARAM');
+                this.appendDummyInput()
+                    //.appendField("number:")
+                    .appendField(new Blockly.FieldNumber(0, 0, 100, 1), 'VALUE');
+                this.appendValueInput('PARAMETERS')
+                    .setCheck('gcode_parameter')
+                    .appendField('');
+                this.setColour(160);
+                this.setOutput(true, 'gcode_parameter');
+                this.setTooltip('G-code parameter block.');
+                this.setHelpUrl('');
+            }
+        };
+
+        // Custom G-code generator for the G-code command block
+        javascript.javascriptGenerator.forBlock['gcode_command'] = function(block,generator) {
+            var command = block.getFieldValue('COMMAND');
+            var value = block.getFieldValue('VALUE');
+            var param = block.getChildren()[0];
+            if(param){
+              if(param.type=="gcode_command"){
+                param = block.getChildren()[1]
+              }
+            }
+            return command + value + ' ' + Blockly.JavaScript.blockToCode(param) + '\n';  // Generate G-code line
+        };
+
+        // Custom G-code generator for the G-code parameter block
+        javascript.javascriptGenerator.forBlock['gcode_parameter'] = function(block,generator) {
+            var param = block.getFieldValue('PARAM');
+            var value = block.getFieldValue('VALUE');
+            var next = block.getChildren()[0];
+            return param + value + " " + Blockly.JavaScript.blockToCode(next);  // Return parameter as string
+        };
+
+        // Inject Blockly
+        var workspace = Blockly.inject('blocklyDiv', {toolbox: document.getElementById('toolbox')});
+
+        // Function to show generated G-code
+        function showCode() {
+            var code = Blockly.JavaScript.workspaceToCode(workspace);
+            console.log(code);
+            alert(code);
+        }
+
+        // Dummy function for "Run G-code" button
+        function runCode() {
+            // Implement run functionality here if needed
+            console.log("Run code functionality not implemented yet.");
+        }
+    </script>
+</body>
+</html>
