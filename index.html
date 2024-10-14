@@ -9,6 +9,35 @@
             height: 100vh;
             width: 100vw;
         }
+        #toolbox {
+            height: 100vh;
+            width: 50vw;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        @media (max-width: 600px) {
+            button {
+                width: 100%;
+            }
+        }
+	h1 {
+            font-size: 2rem; /* Default font size for mobile */
+            color: #333; /* Default text color */
+            text-align: center; /* Center text */
+            margin: 1rem 0; /* Top and bottom margin */
+        }
+
+        /* Styles for desktop */
+        @media (min-width: 768px) {
+          h1 {
+            font-size: 3rem; /* Larger font size for desktop */
+            text-align: left; /* Align text to the left */
+            margin: 2rem 0; /* Increased margin for desktop */
+          }
+	}
     </style>
 </head>
 <body>
@@ -110,7 +139,7 @@
         };
 
         // Inject Blockly
-        var workspace = Blockly.inject('blocklyDiv', {toolbox: document.getElementById('toolbox')});
+        //var workspace = Blockly.inject('blocklyDiv', {toolbox: document.getElementById('toolbox')});
 
         // Function to show generated G-code
         function showCode() {
@@ -124,6 +153,27 @@
             // Implement run functionality here if needed
             console.log("Run code functionality not implemented yet.");
         }
+        function isMobile() {
+          const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+          return regex.test(navigator.userAgent);
+        }
+        if (isMobile()) {
+          var workspace = Blockly.inject('blocklyDiv',
+           {toolbox: document.getElementById('toolbox'),
+            zoom:
+            {controls: false,
+             wheel: false,
+             startScale: 3.0,
+             maxScale: 3,
+             minScale: 0.3,
+             scaleSpeed: 1.2,
+             pinch: true},
+             trashcan: true}
+          );
+        } else {
+          var workspace = Blockly.inject('blocklyDiv', {toolbox: document.getElementById('toolbox')});
+        }
+
     </script>
 </body>
 </html>
