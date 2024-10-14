@@ -12,7 +12,7 @@ This repository provides an interactive G-code Blockly demo, allowing users to v
 ## Getting Started
 
 1. **Open the Demo**:
-   Open the [Demo]().
+   Open the [Demo](https://enricolam.github.io/gcodeBlocky/).
 
 ## Usage
 
