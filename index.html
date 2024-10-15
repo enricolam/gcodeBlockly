@@ -1,179 +1,62 @@
 <!DOCTYPE html>
-<html>
-<head>
-
-<script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
-<script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
-    <style>
-        #blocklyDiv {
-            height: 100vh;
-            width: 100vw;
-        }
-        #toolbox {
-            height: 100vh;
-            width: 50vw;
-        }
-        button {
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-        @media (max-width: 600px) {
-            button {
-                width: 100%;
-            }
-        }
-	h1 {
-            font-size: 2rem; /* Default font size for mobile */
-            color: #333; /* Default text color */
-            text-align: center; /* Center text */
-            margin: 1rem 0; /* Top and bottom margin */
-        }
-
-        /* Styles for desktop */
-        @media (min-width: 768px) {
-          h1 {
-            font-size: 3rem; /* Larger font size for desktop */
-            text-align: left; /* Align text to the left */
-            margin: 2rem 0; /* Increased margin for desktop */
-          }
-	}
-    </style>
-</head>
-<body>
-    <h1>G-code Blockly Demo</h1>
-    <p>
-        <button onclick="showCode()">Show G-code</button>
-        <button onclick="runCode()">Run G-code</button>
-    </p>
-
-    <div id="blocklyDiv"></div>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CodePen - Blockly Resize</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <!-- partial:index.partial.html -->
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Let's Try</h2>
+          <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div id="modalContent" class="modal-body"></div>
+        <div class="modal-footer">
+          <button class="modal-button" onclick="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
     <xml id="toolbox" style="display: none">
-	<block type="gcode_command">
-          <field name="VALUE">28</field>
-        </block>
-	<block type="gcode_command">
-          <field name="VALUE">1</field>
-        </block>
-	<block type="gcode_parameter">
-          <field name="PARAM">X</field>
-        </block>
-	<block type="gcode_parameter">
-          <field name="PARAM">Y</field>
-        </block>
-	<block type="gcode_parameter">
-          <field name="PARAM">Z</field>
-        </block>
+      <block type="gcode_command">
+        <field name="VALUE">28</field>
+      </block>
+      <block type="gcode_command">
+        <field name="VALUE">1</field>
+      </block>
+      <block type="gcode_parameter">
+        <field name="PARAM">X</field>
+      </block>
+      <block type="gcode_parameter">
+        <field name="PARAM">Y</field>
+      </block>
+      <block type="gcode_parameter">
+        <field name="PARAM">Z</field>
+      </block>
     </xml>
-
-    <script>
-        // Define the G-code command block
-        Blockly.Blocks['gcode_command'] = {
-            init: function() {
-                this.setInputsInline(true);
-                this.appendDummyInput()
-                    .appendField(new Blockly.FieldDropdown([
-                        ['G', 'G'],
-                        ['M', 'M'],
-                        ['T', 'T']
-                    ]), 'COMMAND');
-                this.appendDummyInput()
-                    //.appendField("number:")
-                    .appendField(new Blockly.FieldNumber(28, 0, 100, 1), 'VALUE');
-                this.appendValueInput('PARAMETERS')
-                    .setCheck('gcode_parameter')
-                    .appendField('','PARAM');
-                this.setColour(230);
-                this.setPreviousStatement(true, 'COMMAND');
-                this.setNextStatement(true, 'COMMAND');
-                this.setTooltip('G-code command block.');
-                this.setHelpUrl('');
-            }
-        };
-
-        // Define the G-code parameter block
-        Blockly.Blocks['gcode_parameter'] = {
-            init: function() {
-                this.setInputsInline(true);
-                this.appendDummyInput()
-                    .appendField(new Blockly.FieldDropdown([
-                        ['X', 'X'],
-                        ['Y', 'Y'],
-                        ['Z', 'Z'],
-                        ['A', 'A'],
-                        ['B', 'B'],
-                        ['C', 'C']
-                    ]), 'PARAM');
-                this.appendDummyInput()
-                    //.appendField("number:")
-                    .appendField(new Blockly.FieldNumber(0, 0, 100, 1), 'VALUE');
-                this.appendValueInput('PARAMETERS')
-                    .setCheck('gcode_parameter')
-                    .appendField('');
-                this.setColour(160);
-                this.setOutput(true, 'gcode_parameter');
-                this.setTooltip('G-code parameter block.');
-                this.setHelpUrl('');
-            }
-        };
-
-        // Custom G-code generator for the G-code command block
-        javascript.javascriptGenerator.forBlock['gcode_command'] = function(block,generator) {
-            var command = block.getFieldValue('COMMAND');
-            var value = block.getFieldValue('VALUE');
-            var param = block.getChildren()[0];
-            if(param){
-              if(param.type=="gcode_command"){
-                param = block.getChildren()[1]
-              }
-            }
-            return command + value + ' ' + Blockly.JavaScript.blockToCode(param) + '\n';  // Generate G-code line
-        };
-
-        // Custom G-code generator for the G-code parameter block
-        javascript.javascriptGenerator.forBlock['gcode_parameter'] = function(block,generator) {
-            var param = block.getFieldValue('PARAM');
-            var value = block.getFieldValue('VALUE');
-            var next = block.getChildren()[0];
-            return param + value + " " + Blockly.JavaScript.blockToCode(next);  // Return parameter as string
-        };
-
-        // Inject Blockly
-        //var workspace = Blockly.inject('blocklyDiv', {toolbox: document.getElementById('toolbox')});
-
-        // Function to show generated G-code
-        function showCode() {
-            var code = Blockly.JavaScript.workspaceToCode(workspace);
-            console.log(code);
-            alert(code);
-        }
-
-        // Dummy function for "Run G-code" button
-        function runCode() {
-            // Implement run functionality here if needed
-            console.log("Run code functionality not implemented yet.");
-        }
-        function isMobile() {
-          const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
-          return regex.test(navigator.userAgent);
-        }
-        if (isMobile()) {
-          var workspace = Blockly.inject('blocklyDiv',
-           {toolbox: document.getElementById('toolbox'),
-            zoom:
-            {controls: false,
-             wheel: false,
-             startScale: 3.0,
-             maxScale: 3,
-             minScale: 0.3,
-             scaleSpeed: 1.2,
-             pinch: true},
-             trashcan: true}
-          );
-        } else {
-          var workspace = Blockly.inject('blocklyDiv', {toolbox: document.getElementById('toolbox')});
-        }
-
-    </script>
-</body>
+    <section id="blocklyContainer">
+      <button class="svg-button" aria-label="SVG Button" onclick="showCode();">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+          <path d="M8.99396 2C6.19709 2.06395 4.56347 2.33111 3.44729 3.44729C2.33111 4.56347 2.06395 6.19709 2 8.99396M15.006 2C17.8029 2.06395 19.4365 2.33111 20.5527 3.44729C21.6689 4.56347 21.9361 6.19709 22 8.99396M15.006 22C17.8029 21.9361 19.4365 21.6689 20.5527 20.5527C21.6689 19.4365 21.9361 17.8029 22 15.006M8.99396 22C6.19709 21.9361 4.56347 21.6689 3.44729 20.5527C2.33111 19.4365 2.06395 17.8029 2 15.006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M16.9998 7H17.0088" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M13 6V9C13 10.8856 13 11.8284 12.4142 12.4142C11.8284 13 10.8856 13 9 13H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M6.29289 6.29289C6 6.58579 6 7.05719 6 8C6 8.94281 6 9.41421 6.29289 9.70711M6.29289 6.29289C6.58579 6 7.05719 6 8 6C8.94281 6 9.41421 6 9.70711 6.29289M6.29289 6.29289C6.29289 6.29289 6.29289 6.29289 6.29289 6.29289ZM6.29289 9.70711C6.58579 10 7.05719 10 8 10C8.94281 10 9.41421 10 9.70711 9.70711M6.29289 9.70711C6.29289 9.70711 6.29289 9.70711 6.29289 9.70711ZM9.70711 9.70711C10 9.41421 10 8.94281 10 8C10 7.05719 10 6.58579 9.70711 6.29289M9.70711 9.70711C9.70711 9.70711 9.70711 9.70711 9.70711 9.70711ZM9.70711 6.29289C9.70711 6.29289 9.70711 6.29289 9.70711 6.29289Z" stroke="currentColor" stroke-width="1.5" />
+          <path d="M17 15C17.4714 15 17.7071 15 17.8536 15.1464C18 15.2929 18 15.5286 18 16V17C18 17.4714 18 17.7071 17.8536 17.8536C17.7071 18 17.4714 18 17 18H15C14.5286 18 14.2929 18 14.1464 17.8536C14 17.7071 14 17.4714 14 17L14 16C14 15.5286 14 15.2929 14.1464 15.1464C14.2929 15 14.5286 15 15 15L17 15Z" stroke="currentColor" stroke-width="1.5" />
+          <path d="M6 18H11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M17 10L17 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+      <div id="blocklyDiv"></div>
+    </section>
+    <!-- partial -->
+    <script src='https://blockly-demo.appspot.com/static/blockly_compressed.js'></script>
+    <script src='https://blockly-demo.appspot.com/static/blocks_compressed.js'></script>
+    <script src='https://blockly-demo.appspot.com/static/msg/js/en.js'></script>
+    <script src='https://unpkg.com/blockly/javascript_compressed.js'></script>
+    <script src="./script.js"></script>
+  </body>
 </html>
