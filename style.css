@@ -6,6 +6,10 @@
 	--button-hover-border: #4C4184;
 }
 
+:root {
+	user-select: none;
+}
+
 #blocklyContainer {
 	position: relative;
 	width: 100vw;
