@@ -626,7 +626,9 @@
                         ['Z', 'Z'],
                         ['A', 'A'],
                         ['B', 'B'],
-                        ['C', 'C']
+                        ['C', 'C'],
+			['P', 'P'],
+			['S', 'S']
                     ]), 'PARAM');
                 this.appendDummyInput()
                     //.appendField("number:")
