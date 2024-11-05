@@ -679,7 +679,7 @@ const workspace = Blockly.inject('blocklyDiv', {
         function showModal(text) {
             if(!text){return;};
             document.getElementById('modalContent').innerHTML = text ;
-            var svgElement = document.createElement("div"), u = encodeURIComponent(text), s = QRCode.generateSVG(u, { 		ecclevel: "M", 		fillcolor: "#EFEDDC", 		textcolor: "#696AAD", 		margin: 4, 		modulesize: 8 	}); svgElement.appendChild(s); document.getElementById('modalContent').appendChild(svgElement);
+            var svgElement = document.createElement("div"), u = text, s = QRCode.generateSVG(u, { 		ecclevel: "M", 		fillcolor: "#EFEDDC", 		textcolor: "#696AAD", 		margin: 4, 		modulesize: 8 	}); svgElement.appendChild(s); document.getElementById('modalContent').appendChild(svgElement);
             document.getElementById('myModal').style.display = 'flex';
         }
 
