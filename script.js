@@ -632,7 +632,7 @@
                     ]), 'PARAM');
                 this.appendDummyInput()
                     //.appendField("number:")
-                    .appendField(new Blockly.FieldNumber(0, 0, 100, 1), 'VALUE');
+                    .appendField(new Blockly.FieldNumber(0, 0, 10000, 1), 'VALUE');
                 this.appendValueInput('PARAMETERS')
                     .setCheck('gcode_parameter')
                     .appendField('');
