@@ -653,7 +653,7 @@
                 param = block.getChildren()[1]
               }
             }
-            return command + value + ' ' + Blockly.JavaScript.blockToCode(param) + '\\r\\n';  // Generate G-code line
+            return command + value + ' ' + Blockly.JavaScript.blockToCode(param) + '\\\\r\\\\n';  // Generate G-code line
         };
 
         // Custom G-code generator for the G-code parameter block
