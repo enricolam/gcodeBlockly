@@ -1,3 +1,9 @@
+// Enable navigation prompt
+window.onbeforeunload = function() {
+    return true;
+};
+// Remove navigation prompt
+window.onbeforeunload = null;
 /*!
  * modified qr.js -- QR code generator in Javascript (revision 2011-01-19)
  * Written by Kang Seonghoon <public+qrjs@mearie.org>.
